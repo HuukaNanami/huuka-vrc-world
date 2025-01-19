@@ -1,116 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Huuka's VRChat World Recommendations</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f4f4f4;
-            cursor: pointer;
-        }
-        .filter {
-            margin-bottom: 20px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VRChat Worlds</title>
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
 </head>
-<body>
-    <h1>Huuka's VRChat World Recommendations</h1>
-    <div class="filter">
-        <label for="tag-filter">Filter by Tag: </label>
-        <input type="text" id="tag-filter" placeholder="Enter a tag">
-        <label for="size-filter">Filter by Size: </label>
-        <select id="size-filter">
-            <option value="">All</option>
-            <option value="小">Small</option>
-            <option value="中">Medium</option>
-            <option value="大">Large</option>
-        </select>
-        <label for="score-filter">Minimum Score: </label>
-        <input type="number" id="score-filter" min="0" max="100" step="1">
-        <button onclick="applyFilters()">Apply Filters</button>
-    </div>
-    <table id="world-table">
-        <thead>
-            <tr>
-                <th onclick="sortTable(0)">World Name</th>
-                <th onclick="sortTable(1)">Description</th>
-                <th onclick="sortTable(2)">Link</th>
-                <th onclick="sortTable(3)">Tags</th>
-                <th onclick="sortTable(4)">Size</th>
-                <th onclick="sortTable(5)">Score</th>
-                <th onclick="sortTable(6)">Updated</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Example Rows -->
-            <tr>
-                <td>Tile screen room</td>
-                <td>格安の動画プレイヤーを視聴できるお部屋</td>
-                <td><a href="https://vrcchat">Link</a></td>
-                <td>リラックス, 家</td>
-                <td>小</td>
-                <td>90</td>
-                <td>2025/01/06</td>
-            </tr>
-            <tr>
-                <td>Library ?</td>
-                <td>真っ白な書庫風建物</td>
-                <td><a href="https://vrcchat">Link</a></td>
-                <td>雰囲気, 写真映え</td>
-                <td>小</td>
-                <td>65</td>
-                <td>2025/01/06</td>
-            </tr>
-            <!-- Add more rows dynamically or manually -->
-        </tbody>
-    </table>
-    <script>
-        function sortTable(columnIndex) {
-            const table = document.getElementById("world-table");
-            const rows = Array.from(table.rows).slice(1);
-            const sortedRows = rows.sort((a, b) => {
-                const aText = a.cells[columnIndex].innerText;
-                const bText = b.cells[columnIndex].innerText;
-                return isNaN(aText) || isNaN(bText) 
-                    ? aText.localeCompare(bText)
-                    : Number(aText) - Number(bText);
-            });
-            sortedRows.forEach(row => table.tBodies[0].appendChild(row));
-        }
+<body class="min-h-screen bg-gray-100">
+  <div id="app"></div>
 
-        function applyFilters() {
-            const tagFilter = document.getElementById("tag-filter").value.toLowerCase();
-            const sizeFilter = document.getElementById("size-filter").value;
-            const scoreFilter = parseInt(document.getElementById("score-filter").value, 10);
+  <script type="text/babel">
+    const worlds = [
+      {
+        id: 1,
+        name: "Nature Valley",
+        description: "美しい自然が広がる癒しのワールド",
+        link: "vrchat://launch?worldId=wrld_123",
+        mainImage: "/placeholder.svg?height=400&width=600",
+        tags: ["自然", "癒し", "写真撮影"],
+        size: "Large",
+        rating: 5,
+      },
+      // 他のデータを追加できます...
+    ];
 
-            const rows = document.querySelectorAll("#world-table tbody tr");
-            rows.forEach(row => {
-                const tags = row.cells[3].innerText.toLowerCase();
-                const size = row.cells[4].innerText;
-                const score = parseInt(row.cells[5].innerText, 10);
+    function App() {
+      return (
+        <div className="container mx-auto p-4">
+          <h1 className="text-2xl font-bold mb-4">VRChat Worlds</h1>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {worlds.map(world => (
+              <div key={world.id} className="bg-white p-4 rounded shadow">
+                <img src={world.mainImage} alt={world.name} className="w-full h-48 object-cover rounded" />
+                <h2 className="text-xl font-semibold mt-2">{world.name}</h2>
+                <p className="text-gray-700">{world.description}</p>
+                <a href={world.link} className="text-blue-500 hover:underline">Visit World</a>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
 
-                const matchesTag = !tagFilter || tags.includes(tagFilter);
-                const matchesSize = !sizeFilter || size === sizeFilter;
-                const matchesScore = isNaN(scoreFilter) || score >= scoreFilter;
-
-                row.style.display = matchesTag && matchesSize && matchesScore ? "" : "none";
-            });
-        }
-    </script>
+    ReactDOM.render(<App />, document.getElementById('app'));
+  </script>
 </body>
 </html>
